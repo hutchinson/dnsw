@@ -1,4 +1,7 @@
 # dnsw Makefile
+# TODO: Modify Makefile to use makedeps so that changes to headers also cause
+# rebuild.
+# TODO: Better understand order-only dependencies.
 
 PROJECT_NAME = dnsw
 
@@ -15,7 +18,7 @@ LDFLAGS =
 SRC_FILES = $(wildcard ${SRCDIR}/*.c)
 OBJ_FILES = $(addprefix ${OBJDIR}/, $(notdir $(SRC_FILES:.c=.o)))
 
-.PHONY: all
+.PHONY: all clean
 all: ${PROJECT_NAME}
 
 ${PROJECT_NAME}: ${OBJ_FILES}
@@ -28,6 +31,5 @@ ${OBJDIR}/%.o: ${SRCDIR}/%.c | ${OBJDIR}
 ${OBJDIR}:
 	mkdir -pv ${OBJDIR}
 
-.PHONY: clean
 clean:
 	rm -Rf ${OBJDIR}
