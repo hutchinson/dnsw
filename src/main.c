@@ -8,8 +8,13 @@
 
 #include <stdio.h>
 
+#include "socket_utils.h"
+
 int main(int argc, char **argv)
 {
   printf("dnsw!\n");
+  ENDPOINT dns_server;
+  build_socket("127.0.0.1", 53, &dns_server);
+  
   return 0;
 }
