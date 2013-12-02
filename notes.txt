@@ -1,0 +1,49 @@
+******************************************************************************************
+Goal
+- Build a recursive resolver for the Domain Name System which:
+  - Maintains a cache
+  - Has an understanding of 'Zones'
+  - Provides a simple resolve(domainname, record type) interface
+  - Internally builds and maintains state of the zones - name servers - resource records
+  that it has visited - responding with those if possible.
+
+******************************************************************************************
+Notes
+- The domain name system is organised into zones.
+- Each zone represents an controlled administrative 'area'.
+- Authoritative name servers provide all the information about names and their associated
+resource records.
+
+e.g. the root zone has a single node called '' and associated with it are 13 NS RRs
+they have 13 associated A records.
+These 13 NS records represent the authoritative names servers for the root zone.
+
+You can query these 13 name servers for any name, for example, com. - has been delegated
+to a different zone. Query the root zone's name servers will result in a referral response
+which is comprised of a glue record to the next zone authoritative NS RR and a glue IN RR.
+This forms the top of the new zone.
+
+******************************************************************************************
+Class Decomposition
+- Zone::query(resource name) - interrogates the authoritative name server for given zone.
+Returns an RR and a flag indicating if it represents a referral.
+
+- RR - the basic building block of the entire system.
+
+- Node{
+  string name;
+  RR records [];
+}
+
+Nameserver
+{
+  RR(NS)
+  RR(IN)
+}
+
+Zone has many Nameservers which can be queried. Result of query a name server is more
+resource records.
+
+Higher level concepts are built on top of the RRs to allow for traversal. This could
+be encapsulated within the Zone's exposed interface?
+
