@@ -1,5 +1,6 @@
 # This is the top level CMakeLists.txt file - it can be used to store
 # project wide settings and adding top level subdirectories.
+
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 # Project & CMake setup
@@ -30,10 +31,10 @@ SET(DNSW_INCLUDES "${PROJECT_SOURCE_DIR}/src/dnsw/include")
 # Build settings
 SET(CMAKE_CXX_COMPILER "clang++")
 SET(CMAKE_C_COMPILER "clang")
-
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -pedantic")
 
-# Add the subdirectories to descend into
-ADD_SUBDIRECTORY(${GTEST_ROOT})
+# Setup GoogleTest framework
+#TODO
+
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(tests)
