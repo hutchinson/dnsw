@@ -1,0 +1,2 @@
+1). Get project building using CMake
+2). Write first unit tests
