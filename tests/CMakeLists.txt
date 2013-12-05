@@ -1,11 +1,14 @@
-SET(GTEST_INCLUDE_PATH "${GTEST_ROOT}/src/include")
-SET(GTEST_LIB_PATH "${GTEST_ROOT}/out")
-
 # Where Google Test's .h files can be found.
-INCLUDE_DIRECTORIES(${GTEST_INCLUDE_PATH})
+INCLUDE_DIRECTORIES(${gtest_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(${gtest_SOURCE_DIR})
 
-# Where Google Test's libraries can be found.
-LINK_DIRECTORIES(${GTEST_LIB_PATH})
+SET(TEST_BINARIES "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests")
 
+##########################################################################################
+# The following can be used as boiler plate code for adding a new test unit.
 ADD_EXECUTABLE(sampletest sampletest.cpp)
-TARGET_LINK_LIBRARIES(sampletest gtest_main) 
+TARGET_LINK_LIBRARIES(sampletest gtest_main)
+SET_TARGET_PROPERTIES(sampletest PROPERTIES
+					  RUNTIME_OUTPUT_DIRECTORY ${TEST_BINARIES})
+ADD_TEST(TestUnit1 ${TEST_BINARIES}/sampletest)
+##########################################################################################

@@ -2,18 +2,10 @@
 # project wide settings and adding top level subdirectories.
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-
-# Project & CMake setup
-IF(${CMAKE_BUILD_TYPE} MATCHES "Debug")
-	SET(CMAKE_VERBOSE_MAKEFILE ON)
-ELSE()
-	SET(CMAKE_VERBOSE_MAKEFILE 1)
-ENDIF()
-
 PROJECT(dnsw)
 
 SET(PROJECT_MAJOR_VERSION 1)
-SET(PROJECT_MINOR_VERSION 1)
+SET(PROJECT_MINOR_VERSION 0)
 SET(PROJECT_VERSION ${PROJECT_MAJOR_VERSION}.${PROJECT_MINOR_VERSION})
 
 CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/dnsw_config.h.in" 
@@ -23,18 +15,19 @@ SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 
-# Setup thirdparty
-SET(THIRDPARTY_ROOT "${PROJECT_SOURCE_DIR}/thirdparty")
-SET(GTEST_ROOT "${THIRDPARTY_ROOT}/gtest-1.7.0")
-
+# Project wide includes
 SET(DNSW_INCLUDES "${PROJECT_SOURCE_DIR}/src/dnsw/include")
 
 # Build settings
-SET(CMAKE_CXX_COMPILER "clang++")
-SET(CMAKE_C_COMPILER "clang")
-#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -pedantic")
+SET(DNSW_CXX_FLAGS "-Wall -Werror -pedantic")
+SET(CMAKE_CXX_FLAGS ${DNSW_CXX_FLAGS})
 
-# Setup GoogleTest framework
-
+# Build the project
 ADD_SUBDIRECTORY(src)
+
+# Unit Tests
+# Unset compiler flags as gtest doesn't compile cleanly
+SET(CMAKE_CXX_FLAGS "")
+ADD_SUBDIRECTORY(thirdparty/gtest-1.7.0)
+ENABLE_TESTING()
 ADD_SUBDIRECTORY(tests)
