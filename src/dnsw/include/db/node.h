@@ -100,6 +100,11 @@ namespace dnsw
        return weak_node_ptr(child->second);
      }
 
+     ~node()
+     {
+       std::cout << "~node '" << m_label << "'" << std::endl;
+     }
+
     private:
       // Construction of node classes should be private and deffered to
       // a public interface which can only return reference counted pointers
@@ -112,6 +117,7 @@ namespace dnsw
 
       node(const node &rhs);
       node& operator=(const node &rhs);
+
 
       // Private members
       const std::string m_label;
