@@ -10,7 +10,11 @@ TEST(basic_node_tests, creation)
 
   ASSERT_TRUE(new_node.get() != NULL);
   ASSERT_TRUE(new_node.use_count() == 1);
-  ASSERT_TRUE(new_node->get_parent().get() == NULL);
+
+  dnsw::weak_node_ptr weak_parent = new_node->get_parent();
+  dnsw::node_ptr parent = weak_parent.lock();
+
+  ASSERT_TRUE(parent.get() == NULL);
   ASSERT_TRUE(new_node->num_children() == 0);
   ASSERT_STREQ(new_node->get_label().c_str(), "com");
 }
@@ -24,17 +28,41 @@ TEST(basic_node_tests, get_children)
   dnsw::node_ptr gov = dnsw::node::create_node("gov");
 
   // Add children
-  parent->add_child("com", com);
-  parent->add_child("org", org);
-  parent->add_child("gov", gov);
+  dnsw::node::add_child(parent, com);
+  dnsw::node::add_child(parent, org);
+  dnsw::node::add_child(parent, gov);
 
   // Check we have three children...
   ASSERT_TRUE(parent->num_children() == 3);
 
-  ASSERT_STREQ(parent->get_child_by_name("com")->get_label().c_str(), "com");
-  ASSERT_STREQ(parent->get_child_by_name("org")->get_label().c_str(), "org");
-  ASSERT_STREQ(parent->get_child_by_name("gov")->get_label().c_str(), "gov");
-  ASSERT_STRNE(parent->get_child_by_name("gov")->get_label().c_str(), "uk");
+  // Check each child has the correct parent.
+  dnsw::weak_node_ptr w_child_com = parent->get_child_by_name("com");
+  dnsw::node_ptr child_com(w_child_com.lock());
+  ASSERT_STREQ(child_com->get_label().c_str(), "com");
 
-  ASSERT_TRUE(parent->get_child_by_name("uk").get() == NULL);
+  dnsw::weak_node_ptr w_parent_com = child_com->get_parent();
+  dnsw::node_ptr parent_com(w_parent_com.lock());
+  ASSERT_TRUE(parent_com.get() == parent.get());
+
+  // --------------------------------------------------------------------------
+  
+  dnsw::weak_node_ptr w_child_org = parent->get_child_by_name("org");
+  dnsw::node_ptr child_org(w_child_org.lock());
+  ASSERT_STREQ(child_org->get_label().c_str(), "org");
+
+  dnsw::weak_node_ptr w_parent_org = child_org->get_parent();
+  dnsw::node_ptr parent_org(w_parent_org.lock());
+  ASSERT_TRUE(parent_org.get() == parent.get());
+
+  // --------------------------------------------------------------------------A
+  dnsw::weak_node_ptr w_child_gov = parent->get_child_by_name("gov");
+  dnsw::node_ptr child_gov(w_child_gov.lock());
+  ASSERT_STREQ(child_gov->get_label().c_str(), "gov");
+
+  dnsw::weak_node_ptr w_parent_gov = child_gov->get_parent();
+  dnsw::node_ptr parent_gov(w_parent_gov.lock());
+  ASSERT_TRUE(parent_gov.get() == parent.get());
+
+  // Make sure our parent doesn't tell us it has things we don't
+  ASSERT_TRUE(parent->get_child_by_name("uk").lock().get() == NULL);
 }
