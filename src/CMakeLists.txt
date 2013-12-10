@@ -1,4 +1,5 @@
 # Defer downwards.
 
-ADD_SUBDIRECTORY(dnsw)
+ADD_SUBDIRECTORY(db)
+ADD_SUBDIRECTORY(resolver)
 ADD_SUBDIRECTORY(driver)

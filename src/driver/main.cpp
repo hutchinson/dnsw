@@ -1,6 +1,8 @@
 #include <iostream>
+#include <memory>
 
 #include "db/node.h"
+#include "resolver/coopresolver.h"
 
 int main(int argc, char **argv)
 {
@@ -36,5 +38,10 @@ int main(int argc, char **argv)
   }
 
   std::cout << "Domain name '" << domain_name << "'" << std::endl;
+
+  // Build a 'resolver'.
+  std::shared_ptr<dnsw::resolver> resolver(new dnsw::coopresolver());
+  resolver->resolve("www.example.com", dnsw::rr::A);
+
   return 0;
 }

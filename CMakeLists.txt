@@ -16,7 +16,8 @@ SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 
 # Project wide includes
-SET(DNSW_INCLUDES "${PROJECT_SOURCE_DIR}/src/dnsw/include")
+SET(DNSW_INCLUDES "${PROJECT_SOURCE_DIR}/src/db/include" 
+                  "${PROJECT_SOURCE_DIR}/src/resolver/include")
 
 # Build settings
 SET(DNSW_CXX_FLAGS "-Wall -Werror -pedantic")
