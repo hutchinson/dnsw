@@ -20,7 +20,7 @@ SET(DNSW_INCLUDES "${PROJECT_SOURCE_DIR}/src/db/include"
                   "${PROJECT_SOURCE_DIR}/src/resolver/include")
 
 # Build settings
-SET(DNSW_CXX_FLAGS "-Wall -Werror -pedantic")
+SET(DNSW_CXX_FLAGS "-Wall -Werror -pedantic -std=c++11 -stdlib=libc++")
 SET(CMAKE_CXX_FLAGS ${DNSW_CXX_FLAGS})
 
 # Build the project
