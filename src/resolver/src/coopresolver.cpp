@@ -1,5 +1,7 @@
 #include "resolver/coopresolver.h"
 
+#include "db/rr_printer.h"
+
 #include <iostream>
 #include <thread>
 #include <utility>
@@ -48,6 +50,9 @@ const std::string dnsw::coopresolver::resolve(const std::string &name,
   // re-query another nameserver.
 
   dnsw::rr_ptr root_ns = m_root->get_nameserver_by_index(0);
+
+  dnsw::rr_printer_factory::get_factory().format_rr(root_ns, std::cout);
+  std::cout << std::endl;
   
   return "";
 }
