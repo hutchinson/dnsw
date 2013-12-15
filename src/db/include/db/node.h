@@ -26,8 +26,12 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <vector>
+
 // TODO: Use a logger
 #include <iostream>
+
+#include "rr.h"
 
 namespace dnsw
 {
@@ -100,6 +104,19 @@ namespace dnsw
        return weak_node_ptr(child->second);
      }
 
+     void add_authorative_ns(dnsw::rr_ptr auth_ns)
+     {
+       m_nameservers.push_back(auth_ns);
+     }
+
+     dnsw::rr_ptr get_nameserver_by_index(int index)
+     {
+       if(index > m_nameservers.size())
+         return dnsw::rr_ptr();
+
+       return m_nameservers[index];
+     }
+
      ~node()
      {
        std::cout << "~node '" << m_label << "'" << std::endl;
@@ -118,13 +135,16 @@ namespace dnsw
       node(const node &rhs);
       node& operator=(const node &rhs);
 
-
       // Private members
       const std::string m_label;
       weak_node_ptr m_parent;
 
       typedef std::map<std::string, node_ptr> children;
       children m_children;
+
+      // These resource records represent the authorative name servers that
+      // sit at the 'top' of this node.
+      std::vector<dnsw::rr_ptr> m_nameservers;
   };
 }
 

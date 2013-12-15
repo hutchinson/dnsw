@@ -2,6 +2,8 @@
 #define COOPRESOVLER_H
 
 #include "resolver/resolver.h"
+#include "db/node.h"
+
 #include <condition_variable>
 #include <mutex>
 
@@ -45,10 +47,10 @@ namespace dnsw
       coopresolver();
       ~coopresolver();
       const std::string resolve(const std::string &name,
-                                dnsw::rr::TYPE record_type);
+                                dnsw::TYPE record_type);
 
     private:
-      semaphore m_all_threads_done;
+      dnsw::node_ptr m_root;
   };
 }
 

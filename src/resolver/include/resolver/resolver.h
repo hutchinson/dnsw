@@ -11,7 +11,7 @@ namespace dnsw
     public:
       // Should resolve the resource name and type to a particular record type and return it as a string.
       virtual const std::string resolve(const std::string &name,
-                                        dnsw::rr::TYPE record_type) = 0;
+                                        dnsw::TYPE record_type) = 0;
   };
 }
 

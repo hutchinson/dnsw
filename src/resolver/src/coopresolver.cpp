@@ -9,42 +9,45 @@
 
 namespace
 {
-  void test_function(int id, semaphore & sem)
-  {
-    std::cout << "test function " << id << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    sem.notify();
-  }
+
 }
 
 dnsw::coopresolver::coopresolver()
-  : m_all_threads_done(-3)
+  : m_root()
 {
-  std::cout << "coopresolver!" << std::endl;
+  // Create a root node which will have the label ''
+  m_root = dnsw::node::create_node("");
+
+  const char *root_ns_ip = "xxx.xxx.xxx.xxx";
+
+  dnsw::rr_ptr root_ns = dnsw::rr::create_rr(dnsw::A,       // IP Address
+                             dnsw::IN,
+                             0,             // Nevere expire
+                             strlen(root_ns_ip),
+                             reinterpret_cast<const uint8_t*>(root_ns_ip));
+  m_root->add_authorative_ns(root_ns);
 }
 
 dnsw::coopresolver::~coopresolver()
 {
-  std::cout << "~coopresolver" << std::endl;
+  std::cout << "~coopresovler" << std::endl;
 }
 
 const std::string dnsw::coopresolver::resolve(const std::string &name,
-                                         dnsw::rr::TYPE record_type)
+                                         dnsw::TYPE record_type)
 {
-  std::thread t1 (test_function, 1, std::ref(m_all_threads_done));
-  std::thread t2 (test_function, 2, std::ref(m_all_threads_done));
-  std::thread t3 (test_function, 3, std::ref(m_all_threads_done));
+  // The end goal is for n resolvers to each query simultaneously
+  // one of the 14 root nameservers.
+  //
+  // To begin with we'll start with a coopresolver kicking off the resolution
+  // to just one nameserver.
+  
+  // Starting at the root node, generate a query, and send to the name
+  // server.
+  // Process the response, based on answer return with answer, error or
+  // re-query another nameserver.
 
-  // Wait for all threads...
-  std::cout << "Waiting for threads" << std::endl;
-
-  m_all_threads_done.wait();
-
-  t1.join();
-  t2.join();
-  t3.join();
-
-  std::cout << "All Threads done..." << std::endl;
-
+  dnsw::rr_ptr root_ns = m_root->get_nameserver_by_index(0);
+  
   return "";
 }
